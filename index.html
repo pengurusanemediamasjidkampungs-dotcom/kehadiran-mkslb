@@ -2,16 +2,21 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Kehadiran MKSLB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kiosk Kehadiran MKSLB</title>
     <style>
         :root {
-            --primary: #006400;
+            --primary: #006400; /* Hijau Masjid */
             --bg: #f2f2f7;
             --card: #ffffff;
+            --text-dark: #1c1c1e;
+            --text-muted: #8e8e93;
         }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             margin: 0;
             padding: 20px;
@@ -19,90 +24,157 @@
             flex-direction: column;
             align-items: center;
         }
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            width: 100%;
         }
+
         .header img {
             width: 100px;
+            height: auto;
             margin-bottom: 10px;
         }
+
         .header h1 {
-            font-size: 1.5rem;
-            color: #1c1c1e;
+            font-size: 1.4rem;
+            color: var(--text-dark);
             margin: 0;
+            letter-spacing: 1px;
         }
+
+        /* Gaya Jam Digital */
+        #clock {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date-display {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
         .section-title {
             width: 100%;
             max-width: 500px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
-            color: #8e8e93;
-            margin: 20px 0 10px 10px;
+            color: var(--text-muted);
+            margin: 20px 0 10px 5px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
             width: 100%;
             max-width: 500px;
         }
+
         .btn {
             background: var(--card);
             border: none;
-            padding: 20px 15px;
-            border-radius: 15px;
+            padding: 22px 10px;
+            border-radius: 18px;
             text-decoration: none;
-            color: #1c1c1e;
-            font-weight: 600;
+            color: var(--text-dark);
+            font-weight: 700;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.03);
         }
+
+        /* Kesan sentuhan (Touch Effect) */
         .btn:active {
-            transform: scale(0.95);
-            background: #e5e5ea;
+            transform: scale(0.96);
+            background-color: #e5e5ea;
         }
+
         .btn span {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--primary);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            background: rgba(0, 100, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
         }
+
         .footer {
             margin-top: 40px;
-            font-size: 0.8rem;
-            color: #aeaeae;
+            padding-bottom: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Penyesuaian untuk skrin sangat kecil */
+        @media (max-width: 350px) {
+            .grid { grid-template-columns: 1fr; }
+            #clock { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="logo.png" alt="Logo">
+        <img src="logo.png" alt="Logo Masjid">
         <h1>SISTEM KEHADIRAN MKSLB</h1>
+        <div id="clock">00:00:00</div>
+        <div id="date" class="date-display">Memuatkan tarikh...</div>
     </div>
 
-    <div class="section-title">Kumpulan Imam</div>
+    <div class="section-title">KUMPULAN IMAM</div>
     <div class="grid">
         <a href="Imam1.html" class="btn"><span>IMAM 1</span>AZAHARI</a>
-        <a href="Imam2.html" class="btn"><span>IMAM 2</span>NAUDI</a>
-        <a href="Imam3.html" class="btn"><span>IMAM 3</span>AIMAN</a>
-        <a href="Imam4.html" class="btn"><span>IMAM 4</span>FAIZ</a>
+        <a href="Imam2.html" class="btn"><span>IMAM 2</span>NAUDI HAQQI</a>
+        <a href="Imam3.html" class="btn"><span>IMAM 3</span>MUHAMMAD AIMAN</a>
+        <a href="Imam4.html" class="btn"><span>IMAM 4</span>FAIZ MUFASSIR</a>
     </div>
 
-    <div class="section-title">Kumpulan Bilal</div>
+    <div class="section-title">KUMPULAN BILAL</div>
     <div class="grid">
         <a href="bilal1.html" class="btn"><span>BILAL 1</span>NORFAIZAL</a>
-        <a href="bilal2.html" class="btn"><span>BILAL 2</span>SYAMIM</a>
-        <a href="bilal3.html" class="btn"><span>BILAL 3</span>FAUZI</a>
-        <a href="bilal4.html" class="btn"><span>BILAL 4</span>MAKSOM</a>
+        <a href="bilal2.html" class="btn"><span>BILAL 2</span>SYAMIM FIKRI</a>
+        <a href="bilal3.html" class="btn"><span>BILAL 3</span>FAUZI ROSLAN</a>
+        <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
     </div>
 
-    <div class="footer">E-Media Masjid MKSLB &copy; 2026</div>
+    <div class="footer">
+        &copy; 2026 E-Media Masjid Kampung Sg. Lang Baru<br>
+        Sila tekan nama anda untuk lapor diri.
+    </div>
+
+    <script>
+        // Fungsi Jam Digital Real-time
+        function updateTime() {
+            const now = new Date();
+            
+            // Format Jam
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
+            const s = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+            // Format Tarikh (Contoh: Sabtu, 24 Jan 2026)
+            const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', options);
+        }
+
+        // Jalankan setiap saat
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 
 </body>
 </html>
