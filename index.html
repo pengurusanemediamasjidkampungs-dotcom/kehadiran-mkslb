@@ -6,9 +6,8 @@
     <title>Kiosk Kehadiran MKSLB</title>
     <style>
         :root {
-            --primary: #D4AF37; /* Gold / Emas Kuning */
-            --primary-dark: #B8860B; /* Dark Goldenrod */
-            --bg: #0a0a0a; /* Gelap Premium untuk naikkan seri emas */
+            --primary: #D4AF37; /* Emas Kuning */
+            --bg: #0a0a0a; /* Gelap Premium */
             --card: #1c1c1e;
             --text-light: #ffffff;
             --text-gold: #FFD700;
@@ -41,14 +40,13 @@
         }
 
         .header h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-gold);
             margin: 0;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* Gaya Jam Digital Emas */
         #clock {
             font-size: 3.5rem;
             font-weight: 800;
@@ -59,10 +57,11 @@
         }
 
         .date-display {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--text-light);
             margin-bottom: 20px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
         }
 
         .section-title {
@@ -127,9 +126,9 @@
             opacity: 0.8;
         }
 
-        @media (max-width: 350px) {
-            .grid { grid-template-columns: 1fr; }
-            #clock { font-size: 2.5rem; }
+        @media (max-width: 400px) {
+            #clock { font-size: 2.8rem; }
+            .date-display { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -139,7 +138,7 @@
         <img src="logo.png" alt="Logo Masjid">
         <h1>SISTEM KEHADIRAN MKSLB</h1>
         <div id="clock">00:00:00 --</div>
-        <div id="date" class="date-display">...</div>
+        <div id="date" class="date-display">Memuatkan tarikh...</div>
     </div>
 
     <div class="section-title">KUMPULAN IMAM</div>
@@ -166,21 +165,25 @@
         function updateTime() {
             const now = new Date();
             
-            // Logik AM/PM
+            // Format Jam AM/PM
             let hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const seconds = now.getSeconds().toString().padStart(2, '0');
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            hours = hours % 12;
-            hours = hours ? hours : 12; // Jam '0' tukar jadi '12'
-            const strTime = hours.toString().padStart(2, '0') + ":" + minutes + ":" + seconds + " " + ampm;
-            
+            hours = hours % 12 || 12;
+            const strTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
             document.getElementById('clock').textContent = strTime;
 
-            // Tarikh
-            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', options);
+            // Format Tarikh Masihi
+            const optionsMasihi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const tarikhMasihi = now.toLocaleDateString('ms-MY', optionsMasihi);
+
+            // Format Tarikh Hijrah (Intl.DateTimeFormat)
+            const optionsHijrah = { day: 'numeric', month: 'long', year: 'numeric' };
+            const tarikhHijrah = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma', optionsHijrah).format(now);
+
+            // Paparkan Sebaris
+            document.getElementById('date').textContent = `${tarikhMasihi} Masihi bersamaan ${tarikhHijrah} Hijrah`;
         }
 
         setInterval(updateTime, 1000);
