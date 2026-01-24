@@ -141,7 +141,9 @@
             const p = hStr.split('/'); // Format: M/D/YYYY
             const hariH = p[1];
             const bulanH = bulanIslam[parseInt(p[0]) - 1];
-            const tahunH = p[2];
+            
+            // Buang perkataan "AH" daripada tahun
+            const tahunH = p[2].replace('AH', '').trim();
 
             document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
         }
