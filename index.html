@@ -6,8 +6,8 @@
     <title>Kiosk Kehadiran MKSLB</title>
     <style>
         :root {
-            --primary: #D4AF37; /* Emas Kuning */
-            --bg: #0a0a0a; /* Gelap Premium */
+            --primary: #D4AF37; 
+            --bg: #0a0a0a; 
             --card: #1c1c1e;
             --text-light: #ffffff;
             --text-gold: #FFD700;
@@ -61,7 +61,8 @@
             color: var(--text-light);
             margin-bottom: 20px;
             letter-spacing: 0.5px;
-            line-height: 1.5;
+            line-height: 1.6;
+            max-width: 90%;
         }
 
         .section-title {
@@ -174,16 +175,32 @@
             const strTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
             document.getElementById('clock').textContent = strTime;
 
-            // Format Tarikh Masihi
+            // Tarikh Masihi
             const optionsMasihi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const tarikhMasihi = now.toLocaleDateString('ms-MY', optionsMasihi);
 
-            // Format Tarikh Hijrah (Intl.DateTimeFormat)
-            const optionsHijrah = { day: 'numeric', month: 'long', year: 'numeric' };
-            const tarikhHijrah = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma', optionsHijrah).format(now);
+            // Fungsi Manual Hijrah (Lebih Tepat Nama Bulan Islam)
+            const bulanIslam = [
+                "Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir",
+                "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban",
+                "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"
+            ];
 
-            // Paparkan Sebaris
-            document.getElementById('date').textContent = `${tarikhMasihi} Masihi bersamaan ${tarikhHijrah} Hijrah`;
+            // Menggunakan Intl untuk dapatkan angka tarikh Hijrah
+            const hijrahData = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric'
+            }).format(now);
+
+            // Memisahkan data (Contoh output Intl: "5/8/1447")
+            const parts = hijrahData.split('/');
+            const hariH = parts[0];
+            const bulanH = bulanIslam[parseInt(parts[1]) - 1];
+            const tahunH = parts[2];
+
+            const fullDateText = `${tarikhMasihi} Masihi bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
+            document.getElementById('date').textContent = fullDateText;
         }
 
         setInterval(updateTime, 1000);
