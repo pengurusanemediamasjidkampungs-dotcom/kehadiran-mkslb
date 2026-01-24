@@ -71,6 +71,7 @@
             letter-spacing: 0.5px;
             line-height: 1.6;
             max-width: 90%;
+            text-align: center;
         }
 
         .section-title {
@@ -177,43 +178,43 @@
             // 1. FORMAT JAM AM/PM
             let hours = now.getHours();
             const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            
             const displayHours = hours % 12 || 12;
             document.getElementById('clock').textContent = 
-                `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+                `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')} ${ampm}`;
 
             // 2. TARIKH MASIHI
             const optionsMasihi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const tarikhMasihi = now.toLocaleDateString('ms-MY', optionsMasihi);
 
-            // 3. LOGIK PERTUKARAN TARIKH HIJRAH (LEPAS 7:15 PM)
-            const bulanIslam = [
-                "Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir",
-                "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban",
-                "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"
-            ];
-
-            const adjustHijrah = new Date(now);
+            // 3. LOGIK HIJRAH (MAGHRIB RESET)
+            const bulanIslam = ["Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir", "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban", "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"];
             
-            // Semak jika waktu sekarang >= 19:15 (7:15 PM)
+            const adjustHijrah = new Date(now);
+
+            /* PELARASAN MANUAL (OFFSET):
+               Jika sistem Intl lari dari takwim masjid, ubah nilai 'offset'.
+               Sekarang saya tetapkan offset untuk memastikan 24 Jan (sebelum 7:15pm) = 5 Sya'ban.
+            */
+            let offset = 0; 
+
+            // Cek jika sudah Maghrib (7:15 PM)
             if (hours > 19 || (hours === 19 && minutes >= 15)) {
-                adjustHijrah.setDate(now.getDate() + 1); // Tambah 1 hari untuk Hijrah
+                offset += 1;
             }
 
-            const hijrahFormat = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric'
+            adjustHijrah.setDate(now.getDate() + offset);
+
+            const hj = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
+                day: 'numeric', month: 'numeric', year: 'numeric'
             }).format(adjustHijrah);
 
-            const parts = hijrahFormat.split('/');
-            const hariH = parts[0];
-            const bulanH = bulanIslam[parseInt(parts[1]) - 1];
-            const tahunH = parts[2];
+            const p = hj.split('/');
+            const hariH = p[0];
+            const bulanH = bulanIslam[parseInt(p[1]) - 1];
+            const tahunH = p[2];
 
-            document.getElementById('date').textContent = `${tarikhMasihi} Masihi bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
+            document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
         }
 
         setInterval(updateTime, 1000);
