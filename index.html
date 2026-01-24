@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kiosk Kehadiran MKSLB</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+    
     <style>
         :root {
             --primary: #D4AF37; 
@@ -166,46 +174,50 @@
         function updateTime() {
             const now = new Date();
             
-            // Format Jam AM/PM
+            // 1. FORMAT JAM AM/PM
             let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            const strTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
-            document.getElementById('clock').textContent = strTime;
+            
+            const displayHours = hours % 12 || 12;
+            document.getElementById('clock').textContent = 
+                `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
 
-            // Tarikh Masihi
+            // 2. TARIKH MASIHI
             const optionsMasihi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const tarikhMasihi = now.toLocaleDateString('ms-MY', optionsMasihi);
 
-            // Fungsi Manual Hijrah (Lebih Tepat Nama Bulan Islam)
+            // 3. LOGIK PERTUKARAN TARIKH HIJRAH (LEPAS 7:15 PM)
             const bulanIslam = [
                 "Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir",
                 "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban",
                 "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"
             ];
 
-            // Menggunakan Intl untuk dapatkan angka tarikh Hijrah
-            const hijrahData = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
+            const adjustHijrah = new Date(now);
+            
+            // Semak jika waktu sekarang >= 19:15 (7:15 PM)
+            if (hours > 19 || (hours === 19 && minutes >= 15)) {
+                adjustHijrah.setDate(now.getDate() + 1); // Tambah 1 hari untuk Hijrah
+            }
+
+            const hijrahFormat = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
                 day: 'numeric',
                 month: 'numeric',
                 year: 'numeric'
-            }).format(now);
+            }).format(adjustHijrah);
 
-            // Memisahkan data (Contoh output Intl: "5/8/1447")
-            const parts = hijrahData.split('/');
+            const parts = hijrahFormat.split('/');
             const hariH = parts[0];
             const bulanH = bulanIslam[parseInt(parts[1]) - 1];
             const tahunH = parts[2];
 
-            const fullDateText = `${tarikhMasihi} Masihi bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
-            document.getElementById('date').textContent = fullDateText;
+            document.getElementById('date').textContent = `${tarikhMasihi} Masihi bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
     </script>
-
 </body>
 </html>
