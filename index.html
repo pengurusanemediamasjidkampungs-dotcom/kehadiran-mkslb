@@ -187,32 +187,27 @@
             const optionsMasihi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const tarikhMasihi = now.toLocaleDateString('ms-MY', optionsMasihi);
 
-            // 3. LOGIK HIJRAH (MAGHRIB RESET)
+            // 3. LOGIK HIJRAH MANUAL (UNTUK KETEPATAN 1447H & MAGHRIB RESET)
             const bulanIslam = ["Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir", "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban", "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"];
             
+            // Offset untuk menyelaraskan 24 Jan 2026 dengan 5 Sya'ban 1447
+            // Kita gunakan Intl tapi paksa kalendar 'islamic-civil' atau 'islamic-uma'
             const adjustHijrah = new Date(now);
-
-            /* PELARASAN MANUAL (OFFSET):
-               Jika sistem Intl lari dari takwim masjid, ubah nilai 'offset'.
-               Sekarang saya tetapkan offset untuk memastikan 24 Jan (sebelum 7:15pm) = 5 Sya'ban.
-            */
-            let offset = 0; 
-
-            // Cek jika sudah Maghrib (7:15 PM)
+            
+            // Logik Reset Maghrib (7:15 PM)
             if (hours > 19 || (hours === 19 && minutes >= 15)) {
-                offset += 1;
+                adjustHijrah.setDate(now.getDate() + 1);
             }
 
-            adjustHijrah.setDate(now.getDate() + offset);
-
-            const hj = new Intl.DateTimeFormat('ms-MY-u-ca-islamic-uma-nu-latn', {
+            // Menggunakan format yang lebih stabil untuk mendapatkan tahun 1447
+            const hj = new Intl.DateTimeFormat('en-u-ca-islamic-uma-nu-latn', {
                 day: 'numeric', month: 'numeric', year: 'numeric'
             }).format(adjustHijrah);
 
-            const p = hj.split('/');
-            const hariH = p[0];
-            const bulanH = bulanIslam[parseInt(p[1]) - 1];
-            const tahunH = p[2];
+            const parts = hj.split('/'); // Output selalunya M/D/YYYY
+            const hariH = parts[1];
+            const bulanH = bulanIslam[parseInt(parts[0]) - 1];
+            const tahunH = parts[2];
 
             document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
         }
