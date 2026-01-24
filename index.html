@@ -13,6 +13,7 @@
             --bg: #0a0a0a; 
             --card: #1c1c1e;
             --text-gold: #FFD700;
+            --danger: #ff4444;
         }
 
         body {
@@ -80,6 +81,38 @@
             padding: 3px 10px; border-radius: 20px;
         }
 
+        /* BAHAGIAN PANDUAN */
+        .guide-box {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px dashed var(--primary);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        .guide-title {
+            color: var(--text-gold);
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .guide-item {
+            font-size: 0.75rem;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: #cccccc;
+            display: flex;
+            gap: 10px;
+        }
+
+        .guide-item strong { color: var(--danger); }
+        .guide-item b { color: var(--primary); }
+
         .footer { margin-top: auto; padding: 20px; font-size: 0.7rem; color: var(--primary); text-align: center; }
     </style>
 </head>
@@ -108,6 +141,18 @@
         <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
     </div>
 
+    <div class="guide-box">
+        <div class="guide-title">⚠️ PANDUAN PENGGUNA:</div>
+        <div class="guide-item">
+            <span>1.</span>
+            <span><b>PENGGUNA KAD NFC:</b> Sila <strong>PANGKAH (CLOSE TAB)</strong> pelayar anda sejurus selepas kehadiran direkodkan bagi mengelakkan data bertindih.</span>
+        </div>
+        <div class="guide-item">
+            <span>2.</span>
+            <span><b>TIADA SMARTPHONE:</b> Anda boleh menggunakan PC Kiosk yang disediakan. Sila <b>KLIK</b> pada nama anda di paparan skrin untuk melapor diri.</span>
+        </div>
+    </div>
+
     <div class="footer">&copy; 2026 E-Media Masjid Kampung Sg. Lang Baru</div>
 
     <script>
@@ -134,15 +179,12 @@
                 adjustHijrah.setDate(now.getDate() + 1);
             }
 
-            // Gunakan format Civil Islamic untuk mendapatkan tahun Hijrah yang betul (1447)
             const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
             const hStr = new Intl.DateTimeFormat('en-u-ca-islamic-civil-nu-latn', options).format(adjustHijrah);
             
-            const p = hStr.split('/'); // Format: M/D/YYYY
+            const p = hStr.split('/');
             const hariH = p[1];
             const bulanH = bulanIslam[parseInt(p[0]) - 1];
-            
-            // Buang perkataan "AH" daripada tahun
             const tahunH = p[2].replace('AH', '').trim();
 
             document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
