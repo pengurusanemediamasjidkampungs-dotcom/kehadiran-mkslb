@@ -6,11 +6,12 @@
     <title>Kiosk Kehadiran MKSLB</title>
     <style>
         :root {
-            --primary: #006400; /* Hijau Masjid */
-            --bg: #f2f2f7;
-            --card: #ffffff;
-            --text-dark: #1c1c1e;
-            --text-muted: #8e8e93;
+            --primary: #D4AF37; /* Gold / Emas Kuning */
+            --primary-dark: #B8860B; /* Dark Goldenrod */
+            --bg: #0a0a0a; /* Gelap Premium untuk naikkan seri emas */
+            --card: #1c1c1e;
+            --text-light: #ffffff;
+            --text-gold: #FFD700;
         }
 
         * { box-sizing: border-box; }
@@ -23,6 +24,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         .header {
@@ -34,29 +36,33 @@
         .header img {
             width: 100px;
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
         }
 
         .header h1 {
-            font-size: 1.4rem;
-            color: var(--text-dark);
+            font-size: 1.2rem;
+            color: var(--text-gold);
             margin: 0;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        /* Gaya Jam Digital */
+        /* Gaya Jam Digital Emas */
         #clock {
-            font-size: 2.8rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            color: var(--primary);
+            color: var(--text-gold);
             margin: 10px 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
             font-variant-numeric: tabular-nums;
         }
 
         .date-display {
-            font-size: 1rem;
-            color: var(--text-muted);
+            font-size: 1.1rem;
+            color: var(--text-light);
             margin-bottom: 20px;
+            letter-spacing: 1px;
         }
 
         .section-title {
@@ -64,64 +70,66 @@
             max-width: 500px;
             font-size: 0.85rem;
             font-weight: bold;
-            color: var(--text-muted);
-            margin: 20px 0 10px 5px;
+            color: var(--primary);
+            margin: 25px 0 12px 5px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
             width: 100%;
             max-width: 500px;
         }
 
         .btn {
             background: var(--card);
-            border: none;
+            border: 1px solid rgba(212, 175, 55, 0.3);
             padding: 22px 10px;
-            border-radius: 18px;
+            border-radius: 15px;
             text-decoration: none;
-            color: var(--text-dark);
+            color: var(--text-light);
             font-weight: 700;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             align-items: center;
             transition: all 0.2s ease;
-            border: 1px solid rgba(0,0,0,0.03);
         }
 
-        /* Kesan sentuhan (Touch Effect) */
         .btn:active {
             transform: scale(0.96);
-            background-color: #e5e5ea;
+            background-color: #2c2c2e;
+            border-color: var(--primary);
         }
 
         .btn span {
             font-size: 0.65rem;
-            color: var(--primary);
-            margin-bottom: 6px;
-            background: rgba(0, 100, 0, 0.1);
-            padding: 2px 8px;
-            border-radius: 10px;
+            color: var(--text-gold);
+            margin-bottom: 8px;
+            background: rgba(212, 175, 55, 0.15);
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 0.5px solid var(--primary);
         }
 
         .footer {
-            margin-top: 40px;
-            padding-bottom: 20px;
+            margin-top: auto;
+            padding: 30px 0;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--primary);
             text-align: center;
+            opacity: 0.8;
         }
 
-        /* Penyesuaian untuk skrin sangat kecil */
         @media (max-width: 350px) {
             .grid { grid-template-columns: 1fr; }
-            #clock { font-size: 2.2rem; }
+            #clock { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -130,8 +138,8 @@
     <div class="header">
         <img src="logo.png" alt="Logo Masjid">
         <h1>SISTEM KEHADIRAN MKSLB</h1>
-        <div id="clock">00:00:00</div>
-        <div id="date" class="date-display">Memuatkan tarikh...</div>
+        <div id="clock">00:00:00 --</div>
+        <div id="date" class="date-display">...</div>
     </div>
 
     <div class="section-title">KUMPULAN IMAM</div>
@@ -151,27 +159,30 @@
     </div>
 
     <div class="footer">
-        &copy; 2026 E-Media Masjid Kampung Sg. Lang Baru<br>
-        Sila tekan nama anda untuk lapor diri.
+        &copy; 2026 E-Media Masjid Kampung Sg. Lang Baru
     </div>
 
     <script>
-        // Fungsi Jam Digital Real-time
         function updateTime() {
             const now = new Date();
             
-            // Format Jam
-            const h = now.getHours().toString().padStart(2, '0');
-            const m = now.getMinutes().toString().padStart(2, '0');
-            const s = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+            // Logik AM/PM
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Jam '0' tukar jadi '12'
+            const strTime = hours.toString().padStart(2, '0') + ":" + minutes + ":" + seconds + " " + ampm;
+            
+            document.getElementById('clock').textContent = strTime;
 
-            // Format Tarikh (Contoh: Sabtu, 24 Jan 2026)
-            const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+            // Tarikh
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', options);
         }
 
-        // Jalankan setiap saat
         setInterval(updateTime, 1000);
         updateTime();
     </script>
