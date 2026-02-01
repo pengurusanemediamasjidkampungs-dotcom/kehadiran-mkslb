@@ -10,7 +10,7 @@
         :root { --primary: #D4AF37; --bg: #0a0a0a; --card: #1c1c1e; --text-gold: #FFD700; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white; }
         
-        /* --- BARU: RUNNING TEXT --- */
+        /* --- RUNNING TEXT --- */
         .marquee-container {
             width: 100%;
             background: #D4AF37;
@@ -82,6 +82,10 @@
                 <div id="next-solat-label-active"></div>
                 <div id="countdown-display">00:00:00</div>
             </div>
+            <div style="display:none">
+                <span id="subuh"></span><span id="syuruq"></span><span id="zohor"></span>
+                <span id="asar"></span><span id="maghrib"></span><span id="isya"></span>
+            </div>
         </div>
 
         <div class="section-title">KUMPULAN PENTADBIR</div>
@@ -134,49 +138,81 @@
             }
         }
 
-        function processSolat(waktu) {
+        // --- FUNGSI BARU YANG DIKEMAS KINI ---
+        function processSolat(data) {
+            const today = new Date().toISOString().split('T')[0];
+            const hariIni = data.jadual.find(item => item.tarikh === today);
+
+            if (hariIni) {
+                const waktuRaw = hariIni.waktu;
+                const waktu24h = {};
+
+                Object.keys(waktuRaw).forEach(key => {
+                    let [hour, minute] = waktuRaw[key].split(':');
+                    hour = parseInt(hour);
+                    
+                    if (['zohor', 'asar', 'maghrib', 'isya'].includes(key) && hour < 12) {
+                        hour += 12;
+                    }
+                    waktu24h[key] = `${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}`;
+                });
+
+                // Paparkan waktu jika elemen wujud
+                if(document.getElementById('subuh')) {
+                    document.getElementById('subuh').innerText = waktuRaw.subuh;
+                    document.getElementById('syuruq').innerText = waktuRaw.syuruq;
+                    document.getElementById('zohor').innerText = waktuRaw.zohor;
+                    document.getElementById('asar').innerText = waktuRaw.asar;
+                    document.getElementById('maghrib').innerText = waktuRaw.maghrib;
+                    document.getElementById('isya').innerText = waktuRaw.isya;
+                }
+
+                startCountdown(waktu24h);
+            } else {
+                console.error("Data untuk tarikh hari ini tidak dijumpai.");
+            }
+        }
+
+        // Fungsi sokongan untuk memproses countdown
+        function startCountdown(waktu24h) {
             const susunan = [
-                {n: 'Subuh', k: 'subuh', h: 5},
-                {n: 'Syuruq', k: 'syuruq', h: 7},
-                {n: 'Zohor', k: 'zohor', h: 13},
-                {n: 'Asar', k: 'asar', h: 16},
-                {n: 'Maghrib', k: 'maghrib', h: 18},
-                {n: 'Isyak', k: 'isya', h: 20}
+                {n: 'Subuh', k: 'subuh'},
+                {n: 'Syuruq', k: 'syuruq'},
+                {n: 'Zohor', k: 'zohor'},
+                {n: 'Asar', k: 'asar'},
+                {n: 'Maghrib', k: 'maghrib'},
+                {n: 'Isyak', k: 'isya'}
             ];
 
-            const skrg = new Date();
-            let target = null;
-            let targetNama = "";
+            setInterval(() => {
+                const skrg = new Date();
+                let target = null;
+                let targetNama = "";
 
-            for (let s of susunan) {
-                let masaStr = waktu[s.k];
-                if (!masaStr) continue;
-                let [jam, min] = masaStr.split(':').map(Number);
-                if (s.h >= 12 && jam < 12) jam += 12;
-                let tSolat = new Date();
-                tSolat.setHours(jam, min, 0);
+                for (let s of susunan) {
+                    let [jam, min] = waktu24h[s.k].split(':').map(Number);
+                    let tSolat = new Date();
+                    tSolat.setHours(jam, min, 0);
 
-                if (tSolat > skrg) {
-                    target = tSolat;
-                    targetNama = s.n.toUpperCase();
-                    break;
+                    if (tSolat > skrg) {
+                        target = tSolat;
+                        targetNama = s.n.toUpperCase();
+                        break;
+                    }
                 }
-            }
 
-            if (target) {
-                setInterval(() => {
-                    const beza = target - new Date();
-                    if (beza <= 0) { location.reload(); return; }
+                if (target) {
+                    const beza = target - skrg;
                     const h = String(Math.floor(beza / 3600000)).padStart(2, '0');
                     const m = String(Math.floor((beza % 3600000) / 60000)).padStart(2, '0');
                     const s = String(Math.floor((beza % 60000) / 1000)).padStart(2, '0');
                     document.getElementById('next-solat-label-active').innerText = `COUNTDOWN KE WAKTU ${targetNama}`;
                     document.getElementById('countdown-display').innerText = `${h}:${m}:${s}`;
-                }, 1000);
-            } else {
-                document.getElementById('next-solat-label-active').innerText = "WAKTU ISYAK TELAH MASUK";
-                document.getElementById('countdown-display').innerText = "00:00:00";
-            }
+                } else {
+                    document.getElementById('next-solat-label-active').innerText = "WAKTU ISYAK TELAH MASUK";
+                    document.getElementById('countdown-display').innerText = "00:00:00";
+                }
+            }, 1000);
         }
 
         setInterval(updateTime, 1000);
