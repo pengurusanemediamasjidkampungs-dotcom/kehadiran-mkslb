@@ -42,10 +42,30 @@
         #clock { font-size: 3.2rem; font-weight: 800; color: var(--text-gold); margin: 5px 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
         .date-display { font-size: 0.9rem; line-height: 1.4; text-align: center; margin-bottom: 15px; color: #ddd; }
         
-        #solat-module { width: 100%; max-width: 500px; margin-bottom: 20px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary); border-radius: 20px; padding: 20px; text-align: center; position: relative; min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; }
+        /* --- MODUL COUNTDOWN --- */
+        #solat-module { width: 100%; max-width: 500px; margin-bottom: 15px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary); border-radius: 20px; padding: 20px; text-align: center; position: relative; min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; }
         #next-solat-label-active { font-size: 0.7rem; color: var(--text-gold); letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; }
         #countdown-display { font-size: 2.8rem; font-weight: 800; color: #fff; margin: 5px 0; font-variant-numeric: tabular-nums; }
         
+        /* --- JADUAL WAKTU SOLAT --- */
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        .time-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 10px 5px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .time-label { font-size: 0.6rem; color: var(--primary); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 2px; }
+        .time-value { font-size: 0.9rem; font-weight: 700; color: #fff; }
+
         .loader { width: 25px; height: 25px; border: 3px solid rgba(212, 175, 55, 0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin: 15px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -79,13 +99,18 @@
                 <div id="next-solat-label" style="font-size: 0.7rem; color: var(--text-gold);">Menghubungi Takwim...</div>
             </div>
             <div id="solat-content" style="display: none;">
-                <div id="next-solat-label-active"></div>
+                <div id="next-solat-label-active">MENGIRA WAKTU...</div>
                 <div id="countdown-display">00:00:00</div>
             </div>
-            <div style="display:none">
-                <span id="subuh"></span><span id="syuruq"></span><span id="zohor"></span>
-                <span id="asar"></span><span id="maghrib"></span><span id="isya"></span>
-            </div>
+        </div>
+
+        <div class="timetable-grid">
+            <div class="time-box"><span class="time-label">Subuh</span><span id="subuh" class="time-value">--:--</span></div>
+            <div class="time-box"><span class="time-label">Syuruq</span><span id="syuruq" class="time-value">--:--</span></div>
+            <div class="time-box"><span class="time-label">Zohor</span><span id="zohor" class="time-value">--:--</span></div>
+            <div class="time-box"><span class="time-label">Asar</span><span id="asar" class="time-value">--:--</span></div>
+            <div class="time-box"><span class="time-label">Maghrib</span><span id="maghrib" class="time-value">--:--</span></div>
+            <div class="time-box"><span class="time-label">Isyak</span><span id="isya" class="time-value">--:--</span></div>
         </div>
 
         <div class="section-title">KUMPULAN PENTADBIR</div>
@@ -138,7 +163,6 @@
             }
         }
 
-        // --- FUNGSI BARU YANG DIKEMAS KINI ---
         function processSolat(data) {
             const today = new Date().toISOString().split('T')[0];
             const hariIni = data.jadual.find(item => item.tarikh === today);
@@ -157,15 +181,13 @@
                     waktu24h[key] = `${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}`;
                 });
 
-                // Paparkan waktu jika elemen wujud
-                if(document.getElementById('subuh')) {
-                    document.getElementById('subuh').innerText = waktuRaw.subuh;
-                    document.getElementById('syuruq').innerText = waktuRaw.syuruq;
-                    document.getElementById('zohor').innerText = waktuRaw.zohor;
-                    document.getElementById('asar').innerText = waktuRaw.asar;
-                    document.getElementById('maghrib').innerText = waktuRaw.maghrib;
-                    document.getElementById('isya').innerText = waktuRaw.isya;
-                }
+                // Paparkan waktu solat dalam petak jadual
+                document.getElementById('subuh').innerText = waktuRaw.subuh;
+                document.getElementById('syuruq').innerText = waktuRaw.syuruq;
+                document.getElementById('zohor').innerText = waktuRaw.zohor;
+                document.getElementById('asar').innerText = waktuRaw.asar;
+                document.getElementById('maghrib').innerText = waktuRaw.maghrib;
+                document.getElementById('isya').innerText = waktuRaw.isya;
 
                 startCountdown(waktu24h);
             } else {
@@ -173,7 +195,6 @@
             }
         }
 
-        // Fungsi sokongan untuk memproses countdown
         function startCountdown(waktu24h) {
             const susunan = [
                 {n: 'Subuh', k: 'subuh'},
