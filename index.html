@@ -66,8 +66,8 @@
     <div class="footer">© 2026 E-MEDIA MKSLB v3.0</div>
 
     <script>
-        // API URL (Pastikan URL ini betul dari GAS Waktu Solat anda)
-        const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec";
+        // URL API Deployment Version 3 anda
+        const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec?zon=3";
 
         function updateTime() {
             const now = new Date();
@@ -82,21 +82,25 @@
 
         async function getSolat() {
             try {
-                const res = await fetch(API_URL);
+                // Tambah timestamp 't' untuk mengelakkan browser simpan cache lama (force refresh data)
+                const res = await fetch(API_URL + "&t=" + new Date().getTime());
                 const data = await res.json();
+                console.log("Data diterima:", data);
                 processSolat(data);
             } catch (e) {
+                console.error("Ralat API:", e);
                 document.getElementById('next-solat-label').innerText = "RALAT HUBUNGAN API";
             }
         }
 
         function processSolat(waktu) {
+            // Susunan waktu solat mengikut aturan harian
             const susunan = [
                 {n: 'Subuh', k: 'subuh', h: 5},
                 {n: 'Syuruq', k: 'syuruq', h: 7},
                 {n: 'Zohor', k: 'zohor', h: 13},
                 {n: 'Asar', k: 'asar', h: 16},
-                {n: 'Maghrib', k: 'maghrib', h: 19},
+                {n: 'Maghrib', k: 'maghrib', h: 18},
                 {n: 'Isyak', k: 'isya', h: 20}
             ];
 
@@ -109,7 +113,8 @@
                 if (!masaStr) continue;
 
                 let [jam, min] = masaStr.split(':').map(Number);
-                // Logik Fix: Jika waktu solat (Zohor-Isyak) < 12, tambah 12 untuk jadi format 24 jam
+                
+                // Logik Fix: Paksa jam ke format 24 jam supaya perbandingan masa tepat
                 if (s.h >= 12 && jam < 12) jam += 12;
 
                 let tSolat = new Date();
