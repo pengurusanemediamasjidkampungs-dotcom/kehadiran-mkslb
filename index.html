@@ -134,7 +134,7 @@
             <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
         </div>
 
-        <div class="footer">© 2026 E-MEDIA MKSLB v3.2</div>
+        <div class="footer">© 2026 E-MEDIA MKSLB v6.1</div>
     </div>
 
     <script>
@@ -149,6 +149,16 @@
             h = h % 12 || 12;
             document.getElementById('clock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ampm}`;
             document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + " Masihi";
+        }
+
+        // --- FUNGSI AUTO-REFRESH 2:00 PAGI ---
+        function autoRefresh() {
+            const sekarang = new Date();
+            // Menyemak jika jam menunjukkan pukul 2 dan minit ke 0
+            if (sekarang.getHours() === 2 && sekarang.getMinutes() === 0) {
+                console.log("Sistem melakukan pembersihan harian...");
+                location.reload(); 
+            }
         }
 
         async function getSolat() {
@@ -169,7 +179,6 @@
         }
 
         function processSolat(data) {
-            // Ambil tarikh hari ini dalam format YYYY-MM-DD
             const today = new Date().toISOString().split('T')[0];
             const hariIni = data.jadual.find(item => item.tarikh === today);
 
@@ -177,7 +186,6 @@
                 const waktuRaw = hariIni.waktu;
                 const waktu24h = {};
 
-                // Tukar format masa JSON (1:20) ke 24 jam (13:20) & Papar ke UI
                 Object.keys(waktuRaw).forEach(key => {
                     let [hour, minute] = waktuRaw[key].split(':');
                     hour = parseInt(hour);
@@ -187,7 +195,6 @@
                     }
                     waktu24h[key] = `${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}`;
                     
-                    // Kemas kini paparan di kotak jadual
                     if(document.getElementById(key)) {
                         document.getElementById(key).innerText = waktuRaw[key];
                     }
@@ -240,7 +247,12 @@
             }, 1000);
         }
 
+        // Jalankan kemaskini masa & semakan auto-refresh setiap saat
         setInterval(updateTime, 1000);
+        
+        // Jalankan semakan auto-refresh setiap 1 minit (60,000 ms)
+        setInterval(autoRefresh, 60000);
+
         updateTime();
         getSolat();
     </script>
