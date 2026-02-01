@@ -153,17 +153,23 @@
 
         async function getSolat() {
             try {
-                const res = await fetch(API_URL + "&t=" + new Date().getTime());
+                const res = await fetch(API_URL + "?t=" + new Date().getTime());
+                if (!res.ok) throw new Error('Fail JSON tidak dijumpai');
                 const data = await res.json();
+                
                 document.getElementById('loader-container').style.display = 'none';
                 document.getElementById('solat-content').style.display = 'block';
+                
                 processSolat(data);
             } catch (e) {
-                document.getElementById('loader-container').innerHTML = '<div style="color:#ff4444; font-size:0.7rem;">⚠️ RALAT HUBUNGAN API</div>';
+                console.error("Ralat:", e);
+                document.getElementById('loader-container').innerHTML = 
+                    '<div style="color:#ff4444; font-size:0.7rem;">⚠️ RALAT DATA: PASTIKAN GITHUB PAGES AKTIF</div>';
             }
         }
 
         function processSolat(data) {
+            // Ambil tarikh hari ini dalam format YYYY-MM-DD
             const today = new Date().toISOString().split('T')[0];
             const hariIni = data.jadual.find(item => item.tarikh === today);
 
@@ -171,6 +177,7 @@
                 const waktuRaw = hariIni.waktu;
                 const waktu24h = {};
 
+                // Tukar format masa JSON (1:20) ke 24 jam (13:20) & Papar ke UI
                 Object.keys(waktuRaw).forEach(key => {
                     let [hour, minute] = waktuRaw[key].split(':');
                     hour = parseInt(hour);
@@ -179,15 +186,12 @@
                         hour += 12;
                     }
                     waktu24h[key] = `${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}`;
+                    
+                    // Kemas kini paparan di kotak jadual
+                    if(document.getElementById(key)) {
+                        document.getElementById(key).innerText = waktuRaw[key];
+                    }
                 });
-
-                // Paparkan waktu solat dalam petak jadual
-                document.getElementById('subuh').innerText = waktuRaw.subuh;
-                document.getElementById('syuruq').innerText = waktuRaw.syuruq;
-                document.getElementById('zohor').innerText = waktuRaw.zohor;
-                document.getElementById('asar').innerText = waktuRaw.asar;
-                document.getElementById('maghrib').innerText = waktuRaw.maghrib;
-                document.getElementById('isya').innerText = waktuRaw.isya;
 
                 startCountdown(waktu24h);
             } else {
@@ -242,5 +246,3 @@
     </script>
 </body>
 </html>
-
-
