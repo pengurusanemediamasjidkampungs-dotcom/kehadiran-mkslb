@@ -8,65 +8,107 @@
     <meta name="theme-color" content="#0a0a0a">
     <style>
         :root { --primary: #D4AF37; --bg: #0a0a0a; --card: #1c1c1e; --text-gold: #FFD700; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white; }
+        
+        /* --- BARU: RUNNING TEXT --- */
+        .marquee-container {
+            width: 100%;
+            background: #D4AF37;
+            color: #000;
+            padding: 8px 0;
+            font-weight: bold;
+            font-size: 0.85rem;
+            overflow: hidden;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        .container-main { padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 10px; width: 100%; }
         .header img { width: 80px; margin-bottom: 10px; }
         .header h1 { font-size: 0.9rem; color: var(--text-gold); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
         #clock { font-size: 3.2rem; font-weight: 800; color: var(--text-gold); margin: 5px 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
         .date-display { font-size: 0.9rem; line-height: 1.4; text-align: center; margin-bottom: 15px; color: #ddd; }
         
-        #solat-module { width: 100%; max-width: 500px; margin-bottom: 20px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary); border-radius: 20px; padding: 15px; text-align: center; }
-        #next-solat-label { font-size: 0.7rem; color: var(--text-gold); letter-spacing: 1.5px; font-weight: 600; }
+        #solat-module { width: 100%; max-width: 500px; margin-bottom: 20px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary); border-radius: 20px; padding: 20px; text-align: center; position: relative; min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; }
+        #next-solat-label-active { font-size: 0.7rem; color: var(--text-gold); letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; }
         #countdown-display { font-size: 2.8rem; font-weight: 800; color: #fff; margin: 5px 0; font-variant-numeric: tabular-nums; }
         
-        .section-title { width: 100%; max-width: 500px; font-size: 0.75rem; font-weight: bold; color: var(--primary); margin: 15px 0 10px; text-transform: uppercase; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .loader { width: 25px; height: 25px; border: 3px solid rgba(212, 175, 55, 0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin: 15px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .section-title { width: 100%; max-width: 500px; font-size: 0.75rem; font-weight: bold; color: var(--primary); margin: 15px 0 10px; text-transform: uppercase; border-left: 3px solid var(--primary); padding-left: 10px; align-self: center; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 500px; }
         .btn { background: var(--card); border: 1px solid rgba(212, 175, 55, 0.2); padding: 18px 10px; border-radius: 15px; text-decoration: none; color: white; font-weight: 700; text-align: center; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
         .btn:active { transform: scale(0.95); background: #2c2c2e; }
         .btn span { font-size: 0.6rem; color: var(--text-gold); margin-bottom: 4px; background: rgba(212, 175, 55, 0.1); padding: 2px 8px; border-radius: 10px; }
-        
-        .footer { margin-top: 30px; font-size: 0.6rem; color: var(--primary); opacity: 0.6; }
+        .footer { margin-top: 30px; font-size: 0.6rem; color: var(--primary); opacity: 0.6; padding-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="logo.png" alt="Logo">
-        <h1>SISTEM KEHADIRAN MKSLB</h1>
-        <div id="clock">00:00:00 --</div>
-        <div id="date" class="date-display">...</div>
+    <div class="marquee-container">
+        <div class="marquee-text">
+            SELAMAT DATANG KE MASJID KAMPUNG SUNGAI LANG BARU • SILA PASTIKAN ANDA MENGIMBAS KEHADIRAN • JAGA KEBERSIHAN MASJID TANGGUNGJAWAB BERSAMA • LAYARI LAMAN WEB RASMI KAMI UNTUK MAKLUMAT LANJUT •
+        </div>
     </div>
 
-    <div id="solat-module">
-        <div id="next-solat-label">MENYEMAK TAKWIM...</div>
-        <div id="countdown-display">00:00:00</div>
-    </div>
+    <div class="container-main">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h1>SISTEM KEHADIRAN MKSLB</h1>
+            <div id="clock">00:00:00 --</div>
+            <div id="date" class="date-display">...</div>
+        </div>
 
-    <div class="section-title">KUMPULAN PENTADBIR</div>
-    <div class="grid">
-        <a href="nazir.html" class="btn"><span>NAZIR</span>TN. HJ FAUZI DIN</a>
-    </div>
+        <div id="solat-module">
+            <div id="loader-container">
+                <div class="loader"></div>
+                <div id="next-solat-label" style="font-size: 0.7rem; color: var(--text-gold);">Menghubungi Takwim...</div>
+            </div>
+            <div id="solat-content" style="display: none;">
+                <div id="next-solat-label-active"></div>
+                <div id="countdown-display">00:00:00</div>
+            </div>
+        </div>
 
-    <div class="section-title">KUMPULAN IMAM</div>
-    <div class="grid">
-        <a href="Imam1.html" class="btn"><span>IMAM 1</span>AZAHARI</a>
-        <a href="Imam2.html" class="btn"><span>IMAM 2</span>NAUDI HAQQI</a>
-        <a href="Imam3.html" class="btn"><span>IMAM 3</span>MUHAMMAD AIMAN</a>
-        <a href="Imam4.html" class="btn"><span>IMAM 4</span>FAIZ MUFASSIR</a>
-    </div>
+        <div class="section-title">KUMPULAN PENTADBIR</div>
+        <div class="grid">
+            <a href="nazir.html" class="btn"><span>NAZIR</span>TN. HJ FAUZI DIN</a>
+        </div>
 
-    <div class="section-title">KUMPULAN BILAL</div>
-    <div class="grid">
-        <a href="bilal1.html" class="btn"><span>BILAL 1</span>NORFAIZAL</a>
-        <a href="bilal2.html" class="btn"><span>BILAL 2</span>SYAMIM FIKRI</a>
-        <a href="bilal3.html" class="btn"><span>BILAL 3</span>FAUZI ROSLAN</a>
-        <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
-    </div>
+        <div class="section-title">KUMPULAN IMAM</div>
+        <div class="grid">
+            <a href="Imam1.html" class="btn"><span>IMAM 1</span>AZAHARI</a>
+            <a href="Imam2.html" class="btn"><span>IMAM 2</span>NAUDI HAQQI</a>
+            <a href="Imam3.html" class="btn"><span>IMAM 3</span>MUHAMMAD AIMAN</a>
+            <a href="Imam4.html" class="btn"><span>IMAM 4</span>FAIZ MUFASSIR</a>
+        </div>
 
-    <div class="footer">© 2026 E-MEDIA MKSLB v3.0</div>
+        <div class="section-title">KUMPULAN BILAL</div>
+        <div class="grid">
+            <a href="bilal1.html" class="btn"><span>BILAL 1</span>NORFAIZAL</a>
+            <a href="bilal2.html" class="btn"><span>BILAL 2</span>SYAMIM FIKRI</a>
+            <a href="bilal3.html" class="btn"><span>BILAL 3</span>FAUZI ROSLAN</a>
+            <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
+        </div>
+
+        <div class="footer">© 2026 E-MEDIA MKSLB v3.2</div>
+    </div>
 
     <script>
-        // URL API Deployment Version 3 anda
         const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec?zon=3";
 
         function updateTime() {
@@ -82,19 +124,17 @@
 
         async function getSolat() {
             try {
-                // Tambah timestamp 't' untuk mengelakkan browser simpan cache lama (force refresh data)
                 const res = await fetch(API_URL + "&t=" + new Date().getTime());
                 const data = await res.json();
-                console.log("Data diterima:", data);
+                document.getElementById('loader-container').style.display = 'none';
+                document.getElementById('solat-content').style.display = 'block';
                 processSolat(data);
             } catch (e) {
-                console.error("Ralat API:", e);
-                document.getElementById('next-solat-label').innerText = "RALAT HUBUNGAN API";
+                document.getElementById('loader-container').innerHTML = '<div style="color:#ff4444; font-size:0.7rem;">⚠️ RALAT HUBUNGAN API</div>';
             }
         }
 
         function processSolat(waktu) {
-            // Susunan waktu solat mengikut aturan harian
             const susunan = [
                 {n: 'Subuh', k: 'subuh', h: 5},
                 {n: 'Syuruq', k: 'syuruq', h: 7},
@@ -111,12 +151,8 @@
             for (let s of susunan) {
                 let masaStr = waktu[s.k];
                 if (!masaStr) continue;
-
                 let [jam, min] = masaStr.split(':').map(Number);
-                
-                // Logik Fix: Paksa jam ke format 24 jam supaya perbandingan masa tepat
                 if (s.h >= 12 && jam < 12) jam += 12;
-
                 let tSolat = new Date();
                 tSolat.setHours(jam, min, 0);
 
@@ -134,11 +170,11 @@
                     const h = String(Math.floor(beza / 3600000)).padStart(2, '0');
                     const m = String(Math.floor((beza % 3600000) / 60000)).padStart(2, '0');
                     const s = String(Math.floor((beza % 60000) / 1000)).padStart(2, '0');
-                    document.getElementById('next-solat-label').innerText = `COUNTDOWN KE WAKTU ${targetNama}`;
+                    document.getElementById('next-solat-label-active').innerText = `COUNTDOWN KE WAKTU ${targetNama}`;
                     document.getElementById('countdown-display').innerText = `${h}:${m}:${s}`;
                 }, 1000);
             } else {
-                document.getElementById('next-solat-label').innerText = "WAKTU ISYAK TELAH MASUK";
+                document.getElementById('next-solat-label-active').innerText = "WAKTU ISYAK TELAH MASUK";
                 document.getElementById('countdown-display').innerText = "00:00:00";
             }
         }
