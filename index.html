@@ -6,159 +6,45 @@
     <title>Kiosk Kehadiran MKSLB</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a0a0a">
-    
     <style>
-        :root {
-            --primary: #D4AF37; 
-            --bg: #0a0a0a; 
-            --card: #1c1c1e;
-            --text-gold: #FFD700;
-            --danger: #ff4444;
-        }
-
-        body {
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            color: white;
-        }
-
+        :root { --primary: #D4AF37; --bg: #0a0a0a; --card: #1c1c1e; --text-gold: #FFD700; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white; }
         .header { text-align: center; margin-bottom: 10px; width: 100%; }
-        .header img { width: 90px; margin-bottom: 10px; }
-        .header h1 { font-size: 1rem; color: var(--text-gold); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
-
-        #clock {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--text-gold);
-            margin: 5px 0;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-        }
-
-        .date-display {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        /* MODUL SOLAT & COUNTDOWN (TAMBAHAN BARU) */
-        #solat-module {
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 25px;
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        #next-solat-label {
-            font-size: 0.75rem;
-            color: var(--text-gold);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-        }
-
-        #countdown-display {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin: 5px 0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        #list-waktu {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .solat-box {
-            padding: 8px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            border: 1px solid rgba(212,175,55,0.15);
-        }
-
-        .solat-name { font-size: 0.6rem; color: var(--primary); font-weight: bold; margin-bottom: 2px; }
-        .solat-time { font-size: 0.9rem; font-weight: bold; color: #fff; }
-
-        /* GRID SECTIONS */
-        .section-title {
-            width: 100%; max-width: 500px;
-            font-size: 0.8rem; font-weight: bold;
-            color: var(--primary);
-            margin: 15px 0 10px 5px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            border-left: 3px solid var(--primary);
-            padding-left: 10px;
-        }
-
-        .grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 12px; width: 100%; max-width: 500px;
-        }
-
-        .btn {
-            background: var(--card);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 20px 10px; border-radius: 15px;
-            text-decoration: none; color: white;
-            font-weight: 700; text-align: center;
-            display: flex; flex-direction: column; align-items: center;
-            transition: 0.2s;
-        }
-
+        .header img { width: 80px; margin-bottom: 10px; }
+        .header h1 { font-size: 0.9rem; color: var(--text-gold); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        #clock { font-size: 3.2rem; font-weight: 800; color: var(--text-gold); margin: 5px 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+        .date-display { font-size: 0.9rem; line-height: 1.4; text-align: center; margin-bottom: 15px; color: #ddd; }
+        
+        #solat-module { width: 100%; max-width: 500px; margin-bottom: 20px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary); border-radius: 20px; padding: 15px; text-align: center; }
+        #next-solat-label { font-size: 0.7rem; color: var(--text-gold); letter-spacing: 1.5px; font-weight: 600; }
+        #countdown-display { font-size: 2.8rem; font-weight: 800; color: #fff; margin: 5px 0; font-variant-numeric: tabular-nums; }
+        
+        .section-title { width: 100%; max-width: 500px; font-size: 0.75rem; font-weight: bold; color: var(--primary); margin: 15px 0 10px; text-transform: uppercase; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 500px; }
+        .btn { background: var(--card); border: 1px solid rgba(212, 175, 55, 0.2); padding: 18px 10px; border-radius: 15px; text-decoration: none; color: white; font-weight: 700; text-align: center; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
         .btn:active { transform: scale(0.95); background: #2c2c2e; }
-
-        .btn span {
-            font-size: 0.6rem; color: var(--text-gold);
-            margin-bottom: 6px; background: rgba(212, 175, 55, 0.12);
-            padding: 2px 8px; border-radius: 20px;
-        }
-
-        .guide-box {
-            width: 100%; max-width: 500px;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px dashed var(--primary);
-            border-radius: 15px; padding: 15px; margin-top: 25px;
-        }
-
-        .guide-title { color: var(--text-gold); font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
-        .guide-item { font-size: 0.7rem; line-height: 1.4; margin-bottom: 6px; color: #bbb; display: flex; gap: 8px; }
-
-        .footer { margin-top: auto; padding: 20px; font-size: 0.65rem; color: var(--primary); text-align: center; opacity: 0.7; }
+        .btn span { font-size: 0.6rem; color: var(--text-gold); margin-bottom: 4px; background: rgba(212, 175, 55, 0.1); padding: 2px 8px; border-radius: 10px; }
+        
+        .footer { margin-top: 30px; font-size: 0.6rem; color: var(--primary); opacity: 0.6; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="logo.png" alt="Logo Masjid">
+        <img src="logo.png" alt="Logo">
         <h1>SISTEM KEHADIRAN MKSLB</h1>
         <div id="clock">00:00:00 --</div>
         <div id="date" class="date-display">...</div>
     </div>
 
     <div id="solat-module">
-        <div id="next-solat-label">Menghubungi Takwim...</div>
+        <div id="next-solat-label">MENYEMAK TAKWIM...</div>
         <div id="countdown-display">00:00:00</div>
-        <div id="list-waktu"></div>
     </div>
 
     <div class="section-title">KUMPULAN PENTADBIR</div>
     <div class="grid">
         <a href="nazir.html" class="btn"><span>NAZIR</span>TN. HJ FAUZI DIN</a>
-        <div style="visibility: hidden;"></div>
     </div>
 
     <div class="section-title">KUMPULAN IMAM</div>
@@ -177,107 +63,84 @@
         <a href="bilal4.html" class="btn"><span>BILAL 4</span>HJ. MAKSOM</a>
     </div>
 
-    <div class="guide-box">
-        <div class="guide-title">⚠️ PANDUAN PENGGUNA:</div>
-        <div class="guide-item">
-            <span>1.</span>
-            <span><b>PENGGUNA KAD NFC:</b> Sila <strong>PANGKAH (CLOSE TAB)</strong> pelayar anda sejurus selepas kehadiran direkodkan.</span>
-        </div>
-        <div class="guide-item">
-            <span>2.</span>
-            <span><b>TIADA SMARTPHONE:</b> Sila <b>KLIK</b> pada nama anda di paparan skrin untuk melapor diri.</span>
-        </div>
-    </div>
-
-    <div class="footer">&copy; 2026 E-Media Masjid Kampung Sg. Lang Baru</div>
+    <div class="footer">© 2026 E-MEDIA MKSLB v3.0</div>
 
     <script>
-        // 1. JAM & HIJRAH (KEKAL)
+        // API URL (Pastikan URL ini betul dari GAS Waktu Solat anda)
+        const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec";
+
         function updateTime() {
             const now = new Date();
             let h = now.getHours();
-            const m = now.getMinutes().toString().padStart(2, '0');
-            const s = now.getSeconds().toString().padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
             const ampm = h >= 12 ? 'PM' : 'AM';
             h = h % 12 || 12;
-            document.getElementById('clock').textContent = `${h.toString().padStart(2, '0')}:${m}:${s} ${ampm}`;
-
-            const tarikhMasihi = now.toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const bulanIslam = ["Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir", "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban", "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"];
-            const adjustHijrah = new Date(now);
-            if (now.getHours() > 19 || (now.getHours() === 19 && now.getMinutes() >= 15)) {
-                adjustHijrah.setDate(now.getDate() + 1);
-            }
-            const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-            const hStr = new Intl.DateTimeFormat('en-u-ca-islamic-civil-nu-latn', options).format(adjustHijrah);
-            const p = hStr.split('/');
-            document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${p[1]} ${bulanIslam[parseInt(p[0]) - 1]} ${p[2].replace('AH', '').trim()} Hijrah`;
+            document.getElementById('clock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ampm}`;
+            document.getElementById('date').textContent = now.toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + " Masihi";
         }
 
-        // 2. ENJIN API SOLAT
-        const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec";
-
-        async function fetchWaktuSolat() {
+        async function getSolat() {
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                renderSolat(data);
-            } catch (error) {
-                document.getElementById('next-solat-label').innerText = "Ralat API";
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                processSolat(data);
+            } catch (e) {
+                document.getElementById('next-solat-label').innerText = "RALAT HUBUNGAN API";
             }
         }
 
-        function renderSolat(waktu) {
-            const listContainer = document.getElementById('list-waktu');
-            listContainer.innerHTML = '';
-            const susunan = ['Subuh', 'Syuruq', 'Zohor', 'Asar', 'Maghrib', 'Isyak'];
-            const sekarang = new Date();
-            let targetWaktu = null;
+        function processSolat(waktu) {
+            const susunan = [
+                {n: 'Subuh', k: 'subuh', h: 5},
+                {n: 'Syuruq', k: 'syuruq', h: 7},
+                {n: 'Zohor', k: 'zohor', h: 13},
+                {n: 'Asar', k: 'asar', h: 16},
+                {n: 'Maghrib', k: 'maghrib', h: 19},
+                {n: 'Isyak', k: 'isya', h: 20}
+            ];
+
+            const skrg = new Date();
+            let target = null;
             let targetNama = "";
 
-            susunan.forEach(nama => {
-                const key = (nama === 'Isyak') ? 'isya' : nama.toLowerCase();
-                if(!waktu[key]) return;
+            for (let s of susunan) {
+                let masaStr = waktu[s.k];
+                if (!masaStr) continue;
 
-                const [jam, min] = waktu[key].split(':');
-                const tSolat = new Date();
-                tSolat.setHours(parseInt(jam), parseInt(min), 0);
+                let [jam, min] = masaStr.split(':').map(Number);
+                // Logik Fix: Jika waktu solat (Zohor-Isyak) < 12, tambah 12 untuk jadi format 24 jam
+                if (s.h >= 12 && jam < 12) jam += 12;
 
-                listContainer.innerHTML += `
-                    <div class="solat-box">
-                        <div class="solat-name">${nama.toUpperCase()}</div>
-                        <div class="solat-time">${waktu[key]}</div>
-                    </div>`;
+                let tSolat = new Date();
+                tSolat.setHours(jam, min, 0);
 
-                if (!targetWaktu && tSolat > sekarang) {
-                    targetWaktu = tSolat;
-                    targetNama = nama.toUpperCase();
+                if (tSolat > skrg) {
+                    target = tSolat;
+                    targetNama = s.n.toUpperCase();
+                    break;
                 }
-            });
-
-            if (targetWaktu) {
-                startCountdown(targetWaktu, targetNama);
-            } else {
-                document.getElementById('next-solat-label').innerText = "TUGAS SELESAI (ISYAK)";
             }
-        }
 
-        function startCountdown(target, nama) {
-            setInterval(() => {
-                const kini = new Date();
-                const beza = target - kini;
-                if (beza <= 0) { location.reload(); return; }
-                const h = Math.floor(beza / 3600000);
-                const m = Math.floor((beza % 3600000) / 60000);
-                const s = Math.floor((beza % 60000) / 1000);
-                document.getElementById('next-solat-label').innerText = `HINGGA WAKTU ${nama}`;
-                document.getElementById('countdown-display').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            }, 1000);
+            if (target) {
+                setInterval(() => {
+                    const beza = target - new Date();
+                    if (beza <= 0) { location.reload(); return; }
+                    const h = String(Math.floor(beza / 3600000)).padStart(2, '0');
+                    const m = String(Math.floor((beza % 3600000) / 60000)).padStart(2, '0');
+                    const s = String(Math.floor((beza % 60000) / 1000)).padStart(2, '0');
+                    document.getElementById('next-solat-label').innerText = `COUNTDOWN KE WAKTU ${targetNama}`;
+                    document.getElementById('countdown-display').innerText = `${h}:${m}:${s}`;
+                }, 1000);
+            } else {
+                document.getElementById('next-solat-label').innerText = "WAKTU ISYAK TELAH MASUK";
+                document.getElementById('countdown-display').innerText = "00:00:00";
+            }
         }
 
         setInterval(updateTime, 1000);
         updateTime();
-        fetchWaktuSolat();
+        getSolat();
     </script>
 </body>
 </html>
