@@ -47,6 +47,52 @@
             margin-bottom: 25px;
         }
 
+        /* MODUL SOLAT & COUNTDOWN */
+        #solat-module {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 0 25px 0;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #next-solat-label {
+            font-size: 0.8rem;
+            color: var(--text-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        #countdown-display {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 5px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #list-waktu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .solat-box {
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+
+        .solat-name { font-size: 0.65rem; color: var(--primary); font-weight: bold; margin-bottom: 2px; }
+        .solat-time { font-size: 1rem; font-weight: bold; color: #fff; }
+
+        /* BUTTON & GRID SECTIONS */
         .section-title {
             width: 100%; max-width: 500px;
             font-size: 0.85rem; font-weight: bold;
@@ -81,35 +127,15 @@
             padding: 3px 10px; border-radius: 20px;
         }
 
-        /* BAHAGIAN PANDUAN */
         .guide-box {
-            width: 100%;
-            max-width: 500px;
+            width: 100%; max-width: 500px;
             background: rgba(212, 175, 55, 0.05);
             border: 1px dashed var(--primary);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 30px;
+            border-radius: 15px; padding: 15px; margin-top: 30px;
         }
 
-        .guide-title {
-            color: var(--text-gold);
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .guide-item {
-            font-size: 0.75rem;
-            line-height: 1.5;
-            margin-bottom: 8px;
-            color: #cccccc;
-            display: flex;
-            gap: 10px;
-        }
-
+        .guide-title { color: var(--text-gold); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
+        .guide-item { font-size: 0.75rem; line-height: 1.5; margin-bottom: 8px; color: #cccccc; display: flex; gap: 10px; }
         .guide-item strong { color: var(--danger); }
         .guide-item b { color: var(--primary); }
 
@@ -125,10 +151,17 @@
         <div id="date" class="date-display">...</div>
     </div>
 
+    <div id="solat-module">
+        <div id="next-solat-label">Memuatkan Takwim...</div>
+        <div id="countdown-display">00:00:00</div>
+        <div id="list-waktu"></div>
+    </div>
+
     <div class="section-title">KUMPULAN PENTADBIR</div>
     <div class="grid">
         <a href="nazir.html" class="btn"><span>NAZIR</span>TN. HJ FAUZI DIN</a>
-        <div style="visibility: hidden;"></div> </div>
+        <div style="visibility: hidden;"></div>
+    </div>
 
     <div class="section-title">KUMPULAN IMAM</div>
     <div class="grid">
@@ -161,10 +194,9 @@
     <div class="footer">&copy; 2026 E-Media Masjid Kampung Sg. Lang Baru</div>
 
     <script>
+        // 1. LOGIK JAM & HIJRAH (KEKAL SEPERTI ASAL)
         function updateTime() {
             const now = new Date();
-            
-            // 1. JAM AM/PM
             let h = now.getHours();
             const m = now.getMinutes().toString().padStart(2, '0');
             const s = now.getSeconds().toString().padStart(2, '0');
@@ -172,21 +204,16 @@
             h = h % 12 || 12;
             document.getElementById('clock').textContent = `${h.toString().padStart(2, '0')}:${m}:${s} ${ampm}`;
 
-            // 2. TARIKH MASIHI
             const tarikhMasihi = now.toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-            // 3. LOGIK HIJRAH (Membetulkan Tahun 1447 & Reset Maghrib)
             const bulanIslam = ["Muharram", "Safar", "Rabiul Awwal", "Rabiul Akhir", "Jamadil Awwal", "Jamadil Akhir", "Rejab", "Sya'ban", "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"];
             
             const adjustHijrah = new Date(now);
-            // Jika jam >= 7:15 PM (19:15), tambah 1 hari untuk Hijrah
             if (now.getHours() > 19 || (now.getHours() === 19 && now.getMinutes() >= 15)) {
                 adjustHijrah.setDate(now.getDate() + 1);
             }
 
             const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
             const hStr = new Intl.DateTimeFormat('en-u-ca-islamic-civil-nu-latn', options).format(adjustHijrah);
-            
             const p = hStr.split('/');
             const hariH = p[1];
             const bulanH = bulanIslam[parseInt(p[0]) - 1];
@@ -195,8 +222,74 @@
             document.getElementById('date').innerHTML = `${tarikhMasihi} Masihi<br>bersamaan ${hariH} ${bulanH} ${tahunH} Hijrah`;
         }
 
+        // 2. LOGIK API SOLAT (UPDATE BARU)
+        const API_URL = "https://script.google.com/macros/s/AKfycbwsBivLbn5sD3joTBqhesqgaXLgdWBvwJ2JhO8yFZmewoR1VlWVcWZ3tunWYs-jANItqw/exec";
+
+        async function fetchWaktuSolat() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                renderSolat(data);
+            } catch (error) {
+                document.getElementById('next-solat-label').innerText = "Ralat API Takwim";
+            }
+        }
+
+        function renderSolat(waktu) {
+            const listContainer = document.getElementById('list-waktu');
+            listContainer.innerHTML = '';
+            const susunan = ['Subuh', 'Syuruq', 'Zohor', 'Asar', 'Maghrib', 'Isyak'];
+            const sekarang = new Date();
+            let targetWaktu = null;
+            let targetNama = "";
+
+            susunan.forEach(nama => {
+                const key = (nama === 'Isyak') ? 'isya' : nama.toLowerCase();
+                if(!waktu[key]) return;
+
+                const [jam, min] = waktu[key].split(':');
+                const masaSolat = new Date();
+                masaSolat.setHours(parseInt(jam), parseInt(min), 0);
+
+                listContainer.innerHTML += `
+                    <div class="solat-box">
+                        <div class="solat-name">${nama.toUpperCase()}</div>
+                        <div class="solat-time">${waktu[key]}</div>
+                    </div>`;
+
+                if (!targetWaktu && masaSolat > sekarang) {
+                    targetWaktu = masaSolat;
+                    targetNama = nama.toUpperCase();
+                }
+            });
+
+            if (targetWaktu) {
+                startCountdown(targetWaktu, targetNama);
+            } else {
+                document.getElementById('next-solat-label').innerText = "WAKTU ISYAK TELAH MASUK";
+            }
+        }
+
+        function startCountdown(target, nama) {
+            setInterval(() => {
+                const kini = new Date();
+                const beza = target - kini;
+                if (beza <= 0) { location.reload(); return; }
+
+                const h = Math.floor(beza / 3600000);
+                const m = Math.floor((beza % 3600000) / 60000);
+                const s = Math.floor((beza % 60000) / 1000);
+
+                document.getElementById('next-solat-label').innerText = `HINGGA WAKTU ${nama}`;
+                document.getElementById('countdown-display').innerText = 
+                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        // Jalankan semua fungsi
         setInterval(updateTime, 1000);
         updateTime();
+        fetchWaktuSolat();
     </script>
 </body>
 </html>
